@@ -40,9 +40,9 @@ public class FieldMasker {
                 var maskedValue = masker.mask(value);
                 var replacement = foundText.replace(value, maskedValue);
                 var idx = matcher.start() + idxCorrection;
-                //we run this later, because if string length will change it will break matcher
+                //we run this later, because if string length changes it will break matcher
                 replacments.add(() -> res.replace(idx, idx + foundText.length(), replacement));
-                //if string length was changed, we need to remember the ids shift
+                //if string length has changed, we need to remember the shift
                 idxCorrection = idxCorrection + (replacement.length() - foundText.length());
             }
 
