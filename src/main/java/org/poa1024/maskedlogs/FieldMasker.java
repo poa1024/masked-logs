@@ -3,6 +3,7 @@ package org.poa1024.maskedlogs;
 import com.google.common.base.CaseFormat;
 import org.poa1024.maskedlogs.masker.Masker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,17 +28,28 @@ public class FieldMasker {
     public String mask(String text) {
         StringBuilder res = new StringBuilder(text);
         for (Pattern pattern : patternsToMask) {
-            var matcher = pattern.matcher(text);
+            var matcher = pattern.matcher(res);
+
+            List<Runnable> replacments = new ArrayList<>();
+
+            int idxCorrection = 0;
+
             while (matcher.find() && matcher.groupCount() > 0) {
                 var foundText = matcher.group(0);
                 var value = matcher.group(1);
                 var maskedValue = masker.mask(value);
                 var replacement = foundText.replace(value, maskedValue);
-                var idx = matcher.start();
-                for (int j = 0; j < foundText.length(); j++) {
-                    res.setCharAt(idx + j, replacement.charAt(j));
-                }
+                var idx = matcher.start() + idxCorrection;
+                //we run this later, because if string length will change it will break matcher
+                replacments.add(() -> res.replace(idx, idx + foundText.length(), replacement));
+                //if string length was changed, we need to remember the ids shift
+                idxCorrection = idxCorrection + (replacement.length() - foundText.length());
             }
+
+            for (Runnable replacement : replacments) {
+                replacement.run();
+            }
+
         }
         return res.toString();
     }
@@ -45,8 +57,8 @@ public class FieldMasker {
     private static Stream<Pattern> getPatterns(String field) {
         return Stream.of(
                 //json
-                Pattern.compile(" *\"" + field + "\" *: *\"(.*?)\" *"),
-                Pattern.compile(" *\"" + field + "\" *: *(.*?) *,"),
+                Pattern.compile(" *\"" + field + "\" *: *\"(.*?)\""),
+                Pattern.compile(" *\"" + field + "\" *: *([^(\"| )].*?)([, }])"),
                 //map, url etc
                 Pattern.compile(" *[^_-]" + field + " *= *(.*?) *(,|}|&| |\\)|$|\n|\r)"),
                 Pattern.compile("/" + field + "/*(.*?)([/?])")

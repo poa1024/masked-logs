@@ -4,10 +4,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poa1024.maskedlogs.masker.AsteriskMasker
 
-class FieldMaskerTest {
+class FieldAsteriskMaskerIT {
 
     private val fieldMasker = FieldMasker(
-        listOf("order", "apikey", "mobile_app_id", "p_mobile_app_id", "person_id"),
+        listOf("order", "apikey", "unique_app_id", "p_unique_app_id", "person_id"),
         AsteriskMasker(60.0)
     )
 
@@ -38,7 +38,7 @@ class FieldMaskerTest {
         val log =
             "https://poa1024.com/order/12?apikey=someApiKey&num=8787&APIKEY=someApiKey&apikey=someApiKey"
         val expectedMaskedLOg =
-            "https://poa1024.com/order/**?apikey=so******ey&num=8787&APIKEY=so******ey&apikey=so******ey"
+            "https://poa1024.com/order/***?apikey=so******ey&num=8787&APIKEY=so******ey&apikey=so******ey"
         val maskedLog = fieldMasker.mask(log)
         assertThat(maskedLog).isEqualTo(expectedMaskedLOg)
     }
@@ -46,9 +46,9 @@ class FieldMaskerTest {
     @Test
     fun testMaskMap() {
         val log =
-            "{person_id=12345, mobile_app_id   =   txt1231  ,mobileAppId=txt1232,mobile-app-id=txt1233, p_mobile_app_id=txt1234), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
+            "{person_id=12345, unique_app_id   =   txt1231  ,uniqueAppId=txt1232,unique-app-id=txt1233, p_unique_app_id=txt1234), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
         val expectedMaskedLog =
-            "{person_id=1***5, mobile_app_id   =   t****31  ,mobileAppId=t****32,mobile-app-id=t****33, p_mobile_app_id=t****34), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
+            "{person_id=1***5, unique_app_id   =   t****31  ,uniqueAppId=t****32,unique-app-id=t****33, p_unique_app_id=t****34), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
         val maskedLog = fieldMasker.mask(log)
         assertThat(maskedLog).isEqualTo(expectedMaskedLog)
     }
@@ -56,9 +56,9 @@ class FieldMaskerTest {
     @Test
     fun testMaskJson() {
         val log =
-            "{\"person_id\":12345,\"mobile_app_id\":\"txt1234\", \"mobileAppId\"  : \"txt1234\" ,\"mobile-app-id\":\"txt1234\",\"p_mobile_app_id\":\"txt1234\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
+            "{\"person_id\":12345,\"unique_app_id\":\"txt1234\", \"uniqueAppId\"  : \"txt1234\" ,\"unique-app-id\":\"txt1234\",\"p_unique_app_id\":\"txt1234\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
         val expectedMaskedLog =
-            "{\"person_id\":1***5,\"mobile_app_id\":\"t*****4\", \"mobileAppId\"  : \"t*****4\" ,\"mobile-app-id\":\"t*****4\",\"p_mobile_app_id\":\"t*****4\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
+            "{\"person_id\":1***5,\"unique_app_id\":\"t****34\", \"uniqueAppId\"  : \"t****34\" ,\"unique-app-id\":\"t****34\",\"p_unique_app_id\":\"t****34\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
         val maskedLog = fieldMasker.mask(log)
         assertThat(maskedLog).isEqualTo(expectedMaskedLog)
     }
