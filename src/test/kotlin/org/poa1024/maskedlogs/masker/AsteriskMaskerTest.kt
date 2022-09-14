@@ -1,9 +1,21 @@
 package org.poa1024.maskedlogs.masker
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class AsteriskMaskerTest {
+
+    @Test
+    fun testMaskPercentageRange() {
+        assertThatThrownBy { AsteriskMasker(0.0) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("maskPercentage should in a range 0 - 100")
+        assertThatThrownBy { AsteriskMasker(101.0) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("maskPercentage should in a range 0 - 100")
+        AsteriskMasker(50.0)
+    }
 
     @Test
     fun testMask60() {

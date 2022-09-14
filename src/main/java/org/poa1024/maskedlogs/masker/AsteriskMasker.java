@@ -8,6 +8,9 @@ public class AsteriskMasker implements Masker {
     private final double maskPercentage;
 
     public AsteriskMasker(double maskPercentage) {
+        if (maskPercentage <= 0 || maskPercentage > 100) {
+            throw new IllegalArgumentException("maskPercentage should in a range 0 - 100");
+        }
         this.maskPercentage = maskPercentage;
     }
 
