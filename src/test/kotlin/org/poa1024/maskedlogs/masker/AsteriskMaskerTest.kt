@@ -67,4 +67,16 @@ class AsteriskMaskerTest {
         assertThat(masker.mask("12345678901234567890")).isEqualTo("123456********567890")
     }
 
+    @Test
+    fun testMask100() {
+        val masker = AsteriskMasker(100.0)
+        assertThat(masker.mask("1")).isEqualTo("***")
+        assertThat(masker.mask("12")).isEqualTo("***")
+        assertThat(masker.mask("123")).isEqualTo("***")
+        assertThat(masker.mask("1234")).isEqualTo("****")
+        assertThat(masker.mask("12345")).isEqualTo("*****")
+        assertThat(masker.mask("123456789012")).isEqualTo("************")
+        assertThat(masker.mask("12345678901234567890")).isEqualTo("********************")
+    }
+
 }

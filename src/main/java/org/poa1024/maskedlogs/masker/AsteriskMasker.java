@@ -19,9 +19,6 @@ public class AsteriskMasker implements Masker {
         if (s == null || s.length() < 3) {
             return "***";
         }
-        if (s.length() == 3) {
-            return String.format("%s*%s", s.charAt(0), s.charAt(2));
-        }
 
         var maskedLength = Math.floor(s.length() * maskPercentage / 100.0);
         var maskedIdx = (int) (Math.ceil(s.length() - maskedLength) / 2.0);
