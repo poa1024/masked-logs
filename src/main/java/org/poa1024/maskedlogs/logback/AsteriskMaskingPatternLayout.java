@@ -2,8 +2,9 @@ package org.poa1024.maskedlogs.logback;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import org.poa1024.maskedlogs.FieldMasker;
+import org.poa1024.maskedlogs.MaskingTextProcessor;
 import org.poa1024.maskedlogs.masker.AsteriskMasker;
+import org.poa1024.maskedlogs.pattern.FieldsPatternSupplier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,10 +14,10 @@ import java.util.List;
  */
 public class AsteriskMaskingPatternLayout extends PatternLayout {
 
-    private volatile double maskPercentage;
+    private volatile double maskPercentage = 60.0;
     private volatile List<String> fieldsToMask;
 
-    private volatile FieldMasker fieldMasker;
+    private volatile MaskingTextProcessor maskingTextProcessor;
 
     public synchronized void setMaskPercentage(String maskPercentage) {
         this.maskPercentage = Double.parseDouble(maskPercentage);
@@ -28,10 +29,13 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
 
     @Override
     public String doLayout(ILoggingEvent event) {
-        if (fieldMasker == null) {
+        if (maskingTextProcessor == null) {
             synchronized (this) {
-                if (fieldMasker == null) {
-                    fieldMasker = new FieldMasker(fieldsToMask, new AsteriskMasker(maskPercentage));
+                if (maskingTextProcessor == null) {
+                    maskingTextProcessor = new MaskingTextProcessor(
+                            new FieldsPatternSupplier(fieldsToMask),
+                            new AsteriskMasker(maskPercentage)
+                    );
                 }
             }
         }
@@ -39,6 +43,6 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
     }
 
     private String maskMessage(String message) {
-        return fieldMasker.mask(message);
+        return maskingTextProcessor.mask(message);
     }
 }
