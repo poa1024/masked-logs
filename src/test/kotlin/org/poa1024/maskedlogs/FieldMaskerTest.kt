@@ -25,8 +25,8 @@ class FieldMaskerTest {
 
     @Test
     fun testMaskJson() {
-        val log = "{\"person_id\":12345,\"unique_app_id\":\"txt1234\", \"uniqueAppId\"  : \"txt1234\" ,\"unique-app-id\":\"txt1234\",\"p_unique_app_id\":\"txt1234\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
-        val expectedMaskedLog = "{\"person_id\":<MASKED>,\"unique_app_id\":\"<MASKED>\", \"uniqueAppId\"  : \"<MASKED>\" ,\"unique-app-id\":\"<MASKED>\",\"p_unique_app_id\":\"<MASKED>\",\"my_surname\":\"Perekhod\",\"mySurname\":\"Perekhod\",\"my-surname\":\"Perekhod\",\"null\":null,\"empty\":\"\",\"number\":1234}"
+        val log = """{"person_id":12345,"unique_app_id":"txt1234", "uniqueAppId"  : "txt1234" ,"unique-app-id":"txt1234","p_unique_app_id":"txt1234","my_surname":"Perekhod","mySurname":"Perekhod","my-surname":"Perekhod","null":null,"empty":"","number":1234}"""
+        val expectedMaskedLog = """{"person_id":<MASKED>,"unique_app_id":"<MASKED>", "uniqueAppId"  : "<MASKED>" ,"unique-app-id":"<MASKED>","p_unique_app_id":"<MASKED>","my_surname":"Perekhod","mySurname":"Perekhod","my-surname":"Perekhod","null":null,"empty":"","number":1234}"""
         val maskedLog = fieldMasker.mask(log)
         assertThat(maskedLog).isEqualTo(expectedMaskedLog)
     }

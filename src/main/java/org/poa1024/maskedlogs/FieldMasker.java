@@ -30,7 +30,7 @@ public class FieldMasker {
         for (Pattern pattern : patternsToMask) {
             var matcher = pattern.matcher(res);
 
-            List<Runnable> replacments = new ArrayList<>();
+            List<Runnable> replacements = new ArrayList<>();
 
             int idxCorrection = 0;
 
@@ -41,12 +41,12 @@ public class FieldMasker {
                 var replacement = foundText.replace(value, maskedValue);
                 var idx = matcher.start() + idxCorrection;
                 //we run this later, because if string length changes it will break matcher
-                replacments.add(() -> res.replace(idx, idx + foundText.length(), replacement));
+                replacements.add(() -> res.replace(idx, idx + foundText.length(), replacement));
                 //if string length has changed, we need to remember the shift
                 idxCorrection = idxCorrection + (replacement.length() - foundText.length());
             }
 
-            for (Runnable replacement : replacments) {
+            for (Runnable replacement : replacements) {
                 replacement.run();
             }
 
