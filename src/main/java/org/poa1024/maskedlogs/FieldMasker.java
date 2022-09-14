@@ -61,7 +61,7 @@ public class FieldMasker {
                 Pattern.compile(" *\"" + fieldRgx + "\" *: *([^(\"| )].*?)([, }\n|\r])"),
                 //map, url etc
                 Pattern.compile(" *[^_-]" + fieldRgx + " *= *(.*?) *(,|}|&| |\\)|$|\n|\r)"),
-                Pattern.compile("/" + fieldRgx + "/*(.*?)([/?$])")
+                Pattern.compile("/" + fieldRgx + "/*(.*?)([/?$\n\r])")
         );
     }
 }
