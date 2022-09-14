@@ -1,10 +1,9 @@
 package org.poa1024.maskedlogs;
 
-import com.google.common.base.CaseFormat;
 import org.poa1024.maskedlogs.masker.Masker;
+import org.poa1024.maskedlogs.util.Functions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ public class FieldMasker {
         this.masker = masker;
         this.patternsToMask = fieldsToMask
                 .stream()
-                .flatMap(FieldMasker::getAllCases)
+                .flatMap(Functions::lowerUnderscoreToAllCaseFormats)
                 .distinct()
                 .flatMap(FieldMasker::getPatterns)
                 .collect(Collectors.toList());
@@ -65,11 +64,4 @@ public class FieldMasker {
                 Pattern.compile("/" + fieldRgx + "/*(.*?)([/?$])")
         );
     }
-
-    private static Stream<String> getAllCases(String lowerUnderscoreText) {
-        return Arrays
-                .stream(CaseFormat.values())
-                .map(f -> CaseFormat.LOWER_UNDERSCORE.to(f, lowerUnderscoreText));
-    }
-
 }
