@@ -55,13 +55,14 @@ public class FieldMasker {
     }
 
     private static Stream<Pattern> getPatterns(String field) {
+        var fieldRgx = Pattern.quote(field);
         return Stream.of(
                 //json
-                Pattern.compile(" *\"" + field + "\" *: *\"(.*?)\""),
-                Pattern.compile(" *\"" + field + "\" *: *([^(\"| )].*?)([, }])"),
+                Pattern.compile(" *\"" + fieldRgx + "\" *: *\"(.*?)\""),
+                Pattern.compile(" *\"" + fieldRgx + "\" *: *([^(\"| )].*?)([, }\n|\r])"),
                 //map, url etc
-                Pattern.compile(" *[^_-]" + field + " *= *(.*?) *(,|}|&| |\\)|$|\n|\r)"),
-                Pattern.compile("/" + field + "/*(.*?)([/?])")
+                Pattern.compile(" *[^_-]" + fieldRgx + " *= *(.*?) *(,|}|&| |\\)|$|\n|\r)"),
+                Pattern.compile("/" + fieldRgx + "/*(.*?)([/?$])")
         );
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="Console" class="ch.qos.logback.core.FileAppender">
+    <appender name="FileAppender" class="ch.qos.logback.core.FileAppender">
         <file>build/test.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
@@ -12,7 +12,7 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="Console"/>
+        <appender-ref ref="FileAppender"/>
     </root>
 
 </configuration>
