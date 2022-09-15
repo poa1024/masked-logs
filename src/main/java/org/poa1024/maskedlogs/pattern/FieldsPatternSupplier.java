@@ -37,9 +37,9 @@ public class FieldsPatternSupplier implements PatternSupplier {
     private static Stream<Pattern> getJsonPatterns(String field) {
         return Stream.of(
                 // { "order_id" : "123432" }
-                Pattern.compile(" *\"" + field + "\" *: *\"(?<value>.*?)\""),
+                Pattern.compile("\"" + field + "\" *: *\"(?<value>.*?)\""),
                 // { "order_id" : 123432 }
-                Pattern.compile(" *\"" + field + "\" *: *(?<value>[^(\"| )].*?)(,| |}|\n|\r)")
+                Pattern.compile("\"" + field + "\" *: *(?<value>[^(\"| )].*?)(,| |}|\n|\r)")
         );
     }
 
@@ -52,7 +52,7 @@ public class FieldsPatternSupplier implements PatternSupplier {
     //maps and url request parameters
     private static Stream<Pattern> getEqualSignPatterns(String field) {
         return Stream.of(
-                Pattern.compile(" *([^_-]|^)" + field + " *= *(?<value>.*?) *(,|}|&| |\\)|$|\n|\r)")
+                Pattern.compile("(,|\\{|&|\\?| |\\(|^|\n|\r)+" + field + " *= *(?<value>.*?)(,|}|&| |\\)|$|\n|\r)+")
         );
     }
 

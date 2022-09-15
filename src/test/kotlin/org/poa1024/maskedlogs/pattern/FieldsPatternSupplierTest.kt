@@ -13,10 +13,10 @@ class FieldsPatternSupplierTest {
         val patterns = patternSupplier.get()
 
         listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
-            .forEach { field ->
-                textExamplesFor(field).forEach {
-                    assertThat(patterns.oneIsMatched(it)).isTrue
-                }
+            .forEachFieldOccurrenceExample {
+                assertThat(patterns.matches(it))
+                    .describedAs(it)
+                    .isOne()
             }
     }
 
@@ -27,21 +27,44 @@ class FieldsPatternSupplierTest {
         val patterns = patternSupplier.get()
 
         listOf("ext_order_id", "ext-order-id", "extOrderId", "ExtOrderId", "EXT_ORDER_ID")
-            .forEach { field ->
-                textExamplesFor(field).forEach {
-                    assertThat(patterns.noneMatched(it)).isTrue
-                }
+            .forEachFieldOccurrenceExample {
+                assertThat(patterns.noneMatched(it))
+                    .describedAs(it)
+                    .isTrue
             }
     }
 
-    private fun textExamplesFor(field: String) = listOf(
+    private fun List<String>.forEachFieldOccurrenceExample(action: (String) -> Unit) {
+        return this.flatMap { field ->
+            listOf(
+                generateMapAndUrlParameterExamples(field)
+            ).flatten()
+        }.forEach(action)
+    }
+
+    private fun generateMapAndUrlParameterExamples(field: String) = listOf(
         "$field=1",
+        "\r$field=1",
+        "\n$field=1",
+        "{$field=1",
+        "($field=1",
+        "?$field=1",
+        "&$field=1",
         ",$field=1",
-        " $field=1"
+        " $field=1",
+        ", $field=1",
+        ", $field=1,",
+        ", $field=1}",
+        ", $field=1)",
+        ", $field=1&",
+        ", $field=1 ",
+        ", $field=1\r",
+        ", $field=1\n",
     )
 
-    private fun List<Pattern>.oneIsMatched(s: String): Boolean {
-        return this.map { it.matcher(s).matches() }.filter { it }.size == 1
+
+    private fun List<Pattern>.matches(s: String): Int {
+        return this.map { it.matcher(s).matches() }.filter { it }.size
     }
 
     private fun List<Pattern>.noneMatched(s: String): Boolean {
