@@ -6,6 +6,8 @@ import java.util.regex.Pattern
 
 class FieldsPatternSupplierTest {
 
+    private val testValue = "abv1232312+345_12-34ABC_1"
+
     @Test
     fun testThatExactPatternsWork() {
         val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
@@ -13,10 +15,13 @@ class FieldsPatternSupplierTest {
         val patterns = patternSupplier.get()
 
         listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
-            .forEachFieldOccurrenceExample {
-                assertThat(patterns.matches(it))
-                    .describedAs(it)
-                    .isOne()
+            .forEachFieldOccurrenceExample { fieldOccurrenceExample ->
+                assertThat(patterns.matches(fieldOccurrenceExample))
+                    .describedAs(fieldOccurrenceExample)
+                    .isOne
+                assertThat(patterns.retrieveValue(fieldOccurrenceExample))
+                    .describedAs(fieldOccurrenceExample)
+                    .containsExactly(testValue)
             }
     }
 
@@ -37,38 +42,62 @@ class FieldsPatternSupplierTest {
     private fun List<String>.forEachFieldOccurrenceExample(action: (String) -> Unit) {
         return this.flatMap { field ->
             listOf(
-                generateMapAndUrlParameterExamples(field)
+                generateMapAndUrlParameterExamples(field),
+                generateJsonExamples(field),
+                generateJsonExamples(field, keyQuote = false),
+                generateJsonExamples(field, valueQuote = false),
+                generateJsonExamples(field, keyQuote = false, valueQuote = false)
             ).flatten()
         }.forEach(action)
     }
 
     private fun generateMapAndUrlParameterExamples(field: String) = listOf(
-        "$field=1",
-        "\r$field=1",
-        "\n$field=1",
-        "{$field=1",
-        "($field=1",
-        "?$field=1",
-        "&$field=1",
-        ",$field=1",
-        " $field=1",
-        ", $field=1",
-        ", $field=1,",
-        ", $field=1}",
-        ", $field=1)",
-        ", $field=1&",
-        ", $field=1 ",
-        ", $field=1\r",
-        ", $field=1\n",
+        "$field=$testValue",
+        "\r$field=$testValue",
+        "\n$field=$testValue",
+        "{$field=$testValue",
+        "($field=$testValue",
+        "?$field=$testValue",
+        "&$field=$testValue",
+        ",$field=$testValue",
+        " $field=$testValue",
+        ", $field=$testValue",
+        ", $field=$testValue,",
+        ", $field=$testValue}",
+        ", $field=$testValue)",
+        ", $field=$testValue&",
+        ", $field=$testValue ",
+        ", $field=$testValue\r",
+        ", $field=$testValue\n",
     )
+
+    private fun generateJsonExamples(field: String, keyQuote: Boolean = true, valueQuote: Boolean = true): List<String> {
+        val kq = if (keyQuote) "\"" else ""
+        val vq = if (valueQuote) "\"" else ""
+        return listOf(
+            """{$kq$field$kq:${vq}$testValue${vq}}""",
+            """{$kq$field$kq : ${vq}$testValue${vq}}""",
+            """{   $kq$field$kq   :    ${vq}$testValue${vq}   }""",
+            """{$kq$field$kq:${vq}$testValue${vq},}""",
+            """{$kq$field$kq:${vq}$testValue${vq}   ,}""",
+            """{$kq$field$kq:${vq}$testValue${vq}${System.lineSeparator()}}""",
+        )
+    }
 
 
     private fun List<Pattern>.matches(s: String): Int {
-        return this.map { it.matcher(s).matches() }.filter { it }.size
+        return this.map { it.matcher(s).find() }.filter { it }.size
+    }
+
+    private fun List<Pattern>.retrieveValue(s: String): List<String> {
+        return this.mapNotNull {
+            val matcher = it.matcher(s)
+            if (matcher.find()) matcher.group("value") else null
+        }.distinct()
     }
 
     private fun List<Pattern>.noneMatched(s: String): Boolean {
-        return this.map { it.matcher(s).matches() }.none { it }
+        return this.map { it.matcher(s).find() }.none { it }
     }
 
 }
