@@ -43,6 +43,7 @@ class FieldsPatternSupplierTest {
         return this.flatMap { field ->
             listOf(
                 generateMapAndUrlParameterExamples(field),
+                generateUrlPathParameterExamples(field),
                 generateJsonExamples(field),
                 generateJsonExamples(field, keyQuote = false),
                 generateJsonExamples(field, valueQuote = false),
@@ -50,6 +51,13 @@ class FieldsPatternSupplierTest {
             ).flatten()
         }.forEach(action)
     }
+
+    private fun generateUrlPathParameterExamples(field: String) = listOf(
+        "/$field/$testValue",
+        "/$field/$testValue\r",
+        "/$field/$testValue\n",
+        "/$field/$testValue?",
+    )
 
     private fun generateMapAndUrlParameterExamples(field: String) = listOf(
         "$field=$testValue",

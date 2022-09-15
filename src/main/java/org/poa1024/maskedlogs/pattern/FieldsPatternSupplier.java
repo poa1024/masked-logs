@@ -39,11 +39,11 @@ public class FieldsPatternSupplier implements PatternSupplier {
                 // { "order_id" : "123432" }
                 Pattern.compile("\"" + field + "\" *: *\"(?<value>.*?)\""),
                 // { "order_id" : 123432 }
-                Pattern.compile("\"" + field + "\" *: *(?<value>[^(\"| )].*?)(,| |}|\n|\r)"),
+                Pattern.compile("\"" + field + "\" *: *(?<value>[^(\"| )].*?)([, }\n\r])"),
                 // { order_id : "123432" }
                 Pattern.compile("([,{ \n\r])" + field + " *: *\"(?<value>.*?)\""),
                 // { order_id : 123432 }
-                Pattern.compile("([,{ \n\r])" + field + " *: *(?<value>[^(\"| )].*?)(,| |}|\n|\r)")
+                Pattern.compile("([,{ \n\r])" + field + " *: *(?<value>[^(\"| )].*?)([, }\n\r])")
         );
     }
 
