@@ -26,7 +26,8 @@ Fields are searched in:
         <file>logback-logs.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
-            <fieldsToMask>person_id, order_id</fieldsToMask>
+            <field>person_id</field>
+            <field>order_id</field>
             <Pattern>
                 %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
             </Pattern>
@@ -80,7 +81,7 @@ spring-logback.xml
         <file>spring-logback-logs.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>${maskPercentage}</maskPercentage>
-            <fieldsToMask>${fieldsToMask}</fieldsToMask>
+            <fields>${fieldsToMask}</fields>
             <Pattern>
                 %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
             </Pattern>

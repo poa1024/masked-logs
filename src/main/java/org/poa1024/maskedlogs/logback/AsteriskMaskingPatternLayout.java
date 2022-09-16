@@ -6,6 +6,7 @@ import org.poa1024.maskedlogs.MaskingTextProcessor;
 import org.poa1024.maskedlogs.masker.AsteriskMasker;
 import org.poa1024.maskedlogs.pattern.FieldsPatternSupplier;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class AsteriskMaskingPatternLayout extends PatternLayout {
 
     private volatile double maskPercentage = 60.0;
-    private volatile List<String> fieldsToMask;
+    private final List<String> fieldsToMask = new ArrayList<>();
 
     private volatile MaskingTextProcessor maskingTextProcessor;
 
@@ -23,8 +24,12 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
         this.maskPercentage = Double.parseDouble(maskPercentage);
     }
 
-    public synchronized void setFieldsToMask(String fieldsToMask) {
-        this.fieldsToMask = Arrays.asList(fieldsToMask.split(" *, *"));
+    public synchronized void setFields(String fields) {
+        this.fieldsToMask.addAll(Arrays.asList(fields.split(" *, *")));
+    }
+
+    public synchronized void setField(String field) {
+        this.fieldsToMask.add(field);
     }
 
     @Override

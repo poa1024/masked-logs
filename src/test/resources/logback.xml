@@ -4,7 +4,8 @@
         <file>build/test.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
-            <fieldsToMask>person_id, order_id</fieldsToMask>
+            <fields>person_id, order_id</fields>
+            <field>api_key</field>
             <Pattern>
                 %msg%n
             </Pattern>
