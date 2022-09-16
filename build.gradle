@@ -1,23 +1,19 @@
 plugins {
     id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
     id 'org.jetbrains.kotlin.jvm' version '1.5.32'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.32'
 }
 
-group 'org.poa1024'
+group = "io.github.poa1024"
 version '1.0.0'
 
-javadoc {
-    source = sourceSets.main.allJava
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
-
-task javadocJar(type: Jar) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-}
-
-javadocJar.dependsOn(javadoc)
-build.dependsOn(javadocJar)
 
 repositories {
     mavenCentral()
@@ -36,4 +32,65 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'masked-logs'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Masked logs'
+                description = 'Library for masking sensitive data in logs'
+                url = 'https://github.com/poa1024/masked-logs'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'poa1024'
+                        name = 'Oleg Perekhod'
+                        email = 'poa1024@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git@github.com:poa1024/masked-logs.git'
+                    developerConnection = 'scm:git:git@github.com:poa1024/masked-logs.git'
+                    url = 'https://github.com/poa1024/masked-logs'
+                }
+
+                repositories {
+                    maven {
+                        name = "ossrh"
+                        url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                        credentials(PasswordCredentials)
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }
