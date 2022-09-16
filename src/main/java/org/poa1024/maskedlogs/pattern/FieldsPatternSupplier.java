@@ -1,5 +1,6 @@
 package org.poa1024.maskedlogs.pattern;
 
+import org.poa1024.maskedlogs.util.Constants;
 import org.poa1024.maskedlogs.util.Functions;
 
 import java.util.List;
@@ -37,13 +38,13 @@ public class FieldsPatternSupplier implements PatternSupplier {
     private static Stream<Pattern> getJsonPatterns(String field) {
         return Stream.of(
                 // { "order_id" : "123432" }
-                Pattern.compile("\"" + field + "\" *: *\"(?<value>.*?)\""),
+                Pattern.compile("\"" + field + "\" *: *\"(?<value>" + Constants.VALUE_PATTERN + "*?)\""),
                 // { "order_id" : 123432 }
-                Pattern.compile("\"" + field + "\" *: *(?<value>[^(\"| )].*?)([, }\n\r])"),
+                Pattern.compile("\"" + field + "\" *: *(?<value>[^(\"| )]" + Constants.VALUE_PATTERN + "*?)([, }\n\r])"),
                 // { order_id : "123432" }
-                Pattern.compile("([,{ \n\r])" + field + " *: *\"(?<value>.*?)\""),
+                Pattern.compile("([,{ \n\r])" + field + " *: *\"(?<value>" + Constants.VALUE_PATTERN + "*?)\""),
                 // { order_id : 123432 }
-                Pattern.compile("([,{ \n\r])" + field + " *: *(?<value>[^(\"| )].*?)([, }\n\r])")
+                Pattern.compile("([,{ \n\r])" + field + " *: *(?<value>[^(\"| )]" + Constants.VALUE_PATTERN + "*?)([, }\n\r])")
         );
     }
 

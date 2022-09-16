@@ -44,8 +44,8 @@ class MaskingTextProcessorIT {
 
     @Test
     fun testMaskMap() {
-        val log = "{person_id=12345, unique_app_id   =   txt1231  ,uniqueAppId=txt1232,unique-app-id=txt1233, p_unique_app_id=txt1234), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
-        val expectedMaskedLog = "{person_id=1***5, unique_app_id   =   t****31  ,uniqueAppId=t****32,unique-app-id=t****33, p_unique_app_id=t****34), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
+        val log = "{person_id=12345, unique_app_id   =   txt1231  ,uniqueAppId=txt1232,unique-app-id=txt1233,unique-app-id=txt[]1233, p_unique_app_id=txt1234), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
+        val expectedMaskedLog = "{person_id=1***5, unique_app_id   =   t****31  ,uniqueAppId=t****32,unique-app-id=t****33,unique-app-id=txt[]1233, p_unique_app_id=t****34), my_surname=Perekhod, mySurname=Perekhod, my-surname=Perekhod, null=null, empty=, number=1234}"
         val maskedLog = maskingTextProcessor.mask(log)
         assertThat(maskedLog).isEqualTo(expectedMaskedLog)
     }

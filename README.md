@@ -6,6 +6,10 @@ the logs.
 Fields should be configured ONLY in the low underscore case.
 Other cases will be calculated automatically.
 
+Field name allowed pattern: `[a-z0-9_]*` 
+
+Field value allowed pattern: `[A-Za-z0-9_+-]*`
+
 Fields are searched in:
 * URL request parameters
 * URL path parameters
