@@ -1,5 +1,13 @@
 # Masked logs
 
+```xml
+<dependency>
+    <groupId>io.github.poa1024</groupId>
+    <artifactId>masked-logs</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 Logback pattern layout for masking sensitive fields in 
 the logs. 
 
