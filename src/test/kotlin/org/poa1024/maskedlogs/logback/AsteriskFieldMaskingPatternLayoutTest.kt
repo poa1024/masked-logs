@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 
-class AsteriskMaskingPatternLayoutTest {
+class AsteriskFieldMaskingPatternLayoutTest {
 
-    private val logger = LoggerFactory.getLogger("test.masking")
+    private val logger = LoggerFactory.getLogger("test.fieldMasking")
 
     @Test
     fun testMaskingLogs() {

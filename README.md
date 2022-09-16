@@ -1,7 +1,10 @@
 # Masked logs
 
 Logback pattern layout for masking sensitive fields in 
-the logs.
+the logs. 
+
+It's possible to mask only a part of the field's value (by using `maskPercentage` parameter),
+but by default the full value is masked. 
 
 Fields should be configured ONLY in the low underscore case.
 Other cases will be calculated automatically.
@@ -24,7 +27,7 @@ Fields are searched in:
 <configuration>
     <appender name="FileAppender" class="ch.qos.logback.core.FileAppender">
         <file>logback-logs.log</file>
-        <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
+        <layout class="org.poa1024.maskedlogs.logback.AsteriskFieldMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
             <field>person_id</field>
             <field>order_id</field>
@@ -79,7 +82,7 @@ spring-logback.xml
     
     <appender name="FileAppender" class="ch.qos.logback.core.FileAppender">
         <file>spring-logback-logs.log</file>
-        <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
+        <layout class="org.poa1024.maskedlogs.logback.AsteriskFieldMaskingPatternLayout">
             <maskPercentage>${maskPercentage}</maskPercentage>
             <fields>${fieldsToMask}</fields>
             <Pattern>
@@ -99,4 +102,31 @@ application.properties
 ```properties
 log.maskPercentage=60.0
 log.fieldsToMask=person_id, order_id
+```
+
+## Manually configured regex patterns
+
+As an alternative you can define regex patterns by yourself. 
+You should use regex group `value` to mark what you want to replace with mask.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="FileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>logback-logs.log</file>
+        <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
+            <maskPercentage>60</maskPercentage>
+            <pattern>order_id=(?&lt;value&gt;.*)(,|})</pattern>
+            <pattern>person_id="(?&lt;value&gt;.*)(,|})"</pattern>
+            <Pattern>
+                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+            </Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="FileAppender"/>
+    </root>
+
+</configuration>
 ```

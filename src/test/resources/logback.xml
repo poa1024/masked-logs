@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="FileAppender" class="ch.qos.logback.core.FileAppender">
+
+    <appender name="FieldMaskingFileAppender" class="ch.qos.logback.core.FileAppender">
         <file>build/test.log</file>
-        <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
+        <layout class="org.poa1024.maskedlogs.logback.AsteriskFieldMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
             <fields>person_id, order_id</fields>
             <field>api_key</field>
@@ -12,8 +13,24 @@
         </layout>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="FileAppender"/>
-    </root>
+    <appender name="MaskingFileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>build/test.log</file>
+        <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
+            <maskPercentage>60</maskPercentage>
+            <pattern>order_id=(?&lt;value&gt;.*)(,|})</pattern>
+            <pattern>apiKey="(?&lt;value&gt;.*)(,|})"</pattern>
+            <Pattern>
+                %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="test.fieldMasking" level="info">
+        <appender-ref ref="FieldMaskingFileAppender"/>
+    </logger>
+
+    <logger name="test.masking" level="info">
+        <appender-ref ref="MaskingFileAppender"/>
+    </logger>
 
 </configuration>
