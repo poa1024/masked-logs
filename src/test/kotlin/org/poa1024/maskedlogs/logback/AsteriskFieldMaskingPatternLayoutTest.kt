@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 
 class AsteriskFieldMaskingPatternLayoutTest {
 
@@ -19,9 +20,11 @@ class AsteriskFieldMaskingPatternLayoutTest {
             "order_id" to "567765",
             "apiKey" to "someKey",
         )
-        logger.info(map.toString())
-        val lastLog = Files.lines(Path.of("build/test.log")).toList().last()
 
-        assertThat(lastLog).isEqualTo("{id=12, person_id=3***23, external_order_id=ext_567765, order_id=5***65, apiKey=s****ey}")
+        val logKey = UUID.randomUUID().toString()
+        logger.info("$logKey $map")
+        val lastLog = Files.lines(Path.of("build/test.fieldMasking.log")).toList().last { it.startsWith(logKey) }
+
+        assertThat(lastLog).isEqualTo("$logKey {id=12, person_id=3***23, external_order_id=ext_567765, order_id=5***65, apiKey=s****ey}")
     }
 }

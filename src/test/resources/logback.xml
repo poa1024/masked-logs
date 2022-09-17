@@ -2,7 +2,7 @@
 <configuration>
 
     <appender name="FieldMaskingFileAppender" class="ch.qos.logback.core.FileAppender">
-        <file>build/test.log</file>
+        <file>build/test.fieldMasking.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskFieldMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
             <fields>person_id, order_id</fields>
@@ -14,11 +14,11 @@
     </appender>
 
     <appender name="MaskingFileAppender" class="ch.qos.logback.core.FileAppender">
-        <file>build/test.log</file>
+        <file>build/test.masking.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
-            <pattern>order_id=(?&lt;value&gt;.*)(,|})</pattern>
-            <pattern>apiKey="(?&lt;value&gt;.*)(,|})"</pattern>
+            <regexPattern>.*order_id=(?&lt;value&gt;[0-9a-z]*),</regexPattern>
+            <regexPattern>.*personId=(?&lt;value&gt;[0-9a-z]*),</regexPattern>
             <Pattern>
                 %msg%n
             </Pattern>

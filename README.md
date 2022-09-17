@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.poa1024</groupId>
     <artifactId>masked-logs</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ Fields are searched in:
             <field>person_id</field>
             <field>order_id</field>
             <Pattern>
-                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+                %msg%n
             </Pattern>
         </layout>
     </appender>
@@ -94,7 +94,7 @@ spring-logback.xml
             <maskPercentage>${maskPercentage}</maskPercentage>
             <fields>${fieldsToMask}</fields>
             <Pattern>
-                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+                %msg%n
             </Pattern>
         </layout>
     </appender>
@@ -124,10 +124,10 @@ You should use regex group `value` to mark what you want to replace with mask.
         <file>logback-logs.log</file>
         <layout class="org.poa1024.maskedlogs.logback.AsteriskMaskingPatternLayout">
             <maskPercentage>60</maskPercentage>
-            <pattern>order_id=(?&lt;value&gt;.*)(,|})</pattern>
-            <pattern>person_id="(?&lt;value&gt;.*)(,|})"</pattern>
+            <regexPattern>.*order_id=(?&lt;value&gt;[0-9a-z]*),</regexPattern>
+            <regexPattern>.*personId=(?&lt;value&gt;[0-9a-z]*),</regexPattern>
             <Pattern>
-                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+                %msg%n
             </Pattern>
         </layout>
     </appender>

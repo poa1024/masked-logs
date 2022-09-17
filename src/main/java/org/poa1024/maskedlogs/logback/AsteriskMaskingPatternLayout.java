@@ -20,7 +20,7 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
         this.maskPercentage = Double.parseDouble(maskPercentage);
     }
 
-    public synchronized void setPattern(String pattern) {
+    public synchronized void setRegexPattern(String pattern) {
         this.patterns.add(Pattern.compile(pattern));
     }
 
