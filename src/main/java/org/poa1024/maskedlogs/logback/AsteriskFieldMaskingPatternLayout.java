@@ -14,43 +14,39 @@ import java.util.List;
 
 public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
 
-    private volatile String maskPercentage = "100.0";
+    private String maskPercentage = "100.0";
     private final List<String> fieldsToMask = new ArrayList<>();
 
-    private volatile LogProcessor logProcessor;
+    private LogProcessor logProcessor;
 
-    public synchronized void setMaskPercentage(String maskPercentage) {
+    public void setMaskPercentage(String maskPercentage) {
         this.maskPercentage = maskPercentage;
     }
 
-    public synchronized void setFields(String fields) {
+    public void setFields(String fields) {
         this.fieldsToMask.addAll(Arrays.asList(fields.split(" *, *")));
     }
 
-    public synchronized void setField(String field) {
+    public void setField(String field) {
         this.fieldsToMask.add(field);
     }
 
     @Override
-    public String doLayout(ILoggingEvent event) {
-        if (logProcessor == null) {
-            synchronized (this) {
-                if (logProcessor == null) {
-                    try {
-                        logProcessor = new MaskingLogProcessor(
-                                new FieldsPatternSupplier(fieldsToMask),
-                                new AsteriskMasker(Double.parseDouble(maskPercentage))
-                        );
-                    } catch (Exception e) {
-                        logProcessor = new LogProcessorWithInitializationException(getClass(), e);
-                    }
-                }
-            }
+    public void start() {
+        try {
+            this.logProcessor = new MaskingLogProcessor(
+                    new FieldsPatternSupplier(fieldsToMask),
+                    new AsteriskMasker(Double.parseDouble(maskPercentage))
+            );
+        } catch (Exception e) {
+            this.logProcessor = new LogProcessorWithInitializationException(getClass(), e);
         }
-        return maskMessage(super.doLayout(event));
+        super.start();
     }
 
-    private String maskMessage(String message) {
-        return logProcessor.process(message);
+    @Override
+    public String doLayout(ILoggingEvent event) {
+        return logProcessor.process((super.doLayout(event)));
     }
+
 }
