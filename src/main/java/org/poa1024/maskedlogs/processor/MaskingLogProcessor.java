@@ -1,4 +1,4 @@
-package org.poa1024.maskedlogs;
+package org.poa1024.maskedlogs.processor;
 
 import org.poa1024.maskedlogs.masker.Masker;
 import org.poa1024.maskedlogs.pattern.PatternSupplier;
@@ -7,18 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MaskingTextProcessor {
+public class MaskingLogProcessor implements LogProcessor {
 
     private final Masker masker;
     private final List<Pattern> patternsToMask;
 
-    public MaskingTextProcessor(PatternSupplier patternSupplier, Masker masker) {
+    public MaskingLogProcessor(PatternSupplier patternSupplier, Masker masker) {
         this.masker = masker;
         this.patternsToMask = patternSupplier.get();
     }
 
-    public String mask(String text) {
-        StringBuilder res = new StringBuilder(text);
+    @Override
+    public String process(String log) {
+        StringBuilder res = new StringBuilder(log);
         for (Pattern pattern : patternsToMask) {
             var matcher = pattern.matcher(res);
 
