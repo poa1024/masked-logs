@@ -4,6 +4,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import org.poa1024.maskedlogs.masker.AsteriskMasker;
 import org.poa1024.maskedlogs.processor.LogProcessor;
+import org.poa1024.maskedlogs.processor.LogProcessorWithInitializationException;
 import org.poa1024.maskedlogs.processor.MaskingLogProcessor;
 
 import java.util.ArrayList;
@@ -12,17 +13,17 @@ import java.util.regex.Pattern;
 
 public class AsteriskMaskingPatternLayout extends PatternLayout {
 
-    private volatile double maskPercentage = 100.0;
-    private final List<Pattern> patterns = new ArrayList<>();
+    private volatile String maskPercentage = "100.0";
+    private final List<String> patterns = new ArrayList<>();
 
     private volatile LogProcessor logProcessor;
 
     public synchronized void setMaskPercentage(String maskPercentage) {
-        this.maskPercentage = Double.parseDouble(maskPercentage);
+        this.maskPercentage = maskPercentage;
     }
 
     public synchronized void setRegexPattern(String pattern) {
-        this.patterns.add(Pattern.compile(pattern));
+        this.patterns.add(pattern);
     }
 
     @Override
@@ -30,10 +31,14 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
         if (logProcessor == null) {
             synchronized (this) {
                 if (logProcessor == null) {
-                    logProcessor = new MaskingLogProcessor(
-                            () -> patterns,
-                            new AsteriskMasker(maskPercentage)
-                    );
+                    try {
+                        logProcessor = new MaskingLogProcessor(
+                                () -> patterns.stream().map(Pattern::compile).toList(),
+                                new AsteriskMasker(Double.parseDouble(maskPercentage))
+                        );
+                    } catch (Exception e) {
+                        logProcessor = new LogProcessorWithInitializationException(getClass(), e);
+                    }
                 }
             }
         }

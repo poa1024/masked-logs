@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import org.poa1024.maskedlogs.masker.AsteriskMasker;
 import org.poa1024.maskedlogs.pattern.FieldsPatternSupplier;
 import org.poa1024.maskedlogs.processor.LogProcessor;
+import org.poa1024.maskedlogs.processor.LogProcessorWithInitializationException;
 import org.poa1024.maskedlogs.processor.MaskingLogProcessor;
 
 import java.util.ArrayList;
@@ -13,13 +14,13 @@ import java.util.List;
 
 public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
 
-    private volatile double maskPercentage = 100.0;
+    private volatile String maskPercentage = "100.0";
     private final List<String> fieldsToMask = new ArrayList<>();
 
     private volatile LogProcessor logProcessor;
 
     public synchronized void setMaskPercentage(String maskPercentage) {
-        this.maskPercentage = Double.parseDouble(maskPercentage);
+        this.maskPercentage = maskPercentage;
     }
 
     public synchronized void setFields(String fields) {
@@ -35,10 +36,14 @@ public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
         if (logProcessor == null) {
             synchronized (this) {
                 if (logProcessor == null) {
-                    logProcessor = new MaskingLogProcessor(
-                            new FieldsPatternSupplier(fieldsToMask),
-                            new AsteriskMasker(maskPercentage)
-                    );
+                    try {
+                        logProcessor = new MaskingLogProcessor(
+                                new FieldsPatternSupplier(fieldsToMask),
+                                new AsteriskMasker(Double.parseDouble(maskPercentage))
+                        );
+                    } catch (Exception e) {
+                        logProcessor = new LogProcessorWithInitializationException(getClass(), e);
+                    }
                 }
             }
         }
