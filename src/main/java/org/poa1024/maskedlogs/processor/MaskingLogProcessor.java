@@ -14,7 +14,7 @@ public class MaskingLogProcessor implements LogProcessor {
 
     public MaskingLogProcessor(PatternSupplier patternSupplier, Masker masker) {
         this.masker = masker;
-        this.patternsToMask = patternSupplier.get();
+        this.patternsToMask = patternSupplier.get().toList();
     }
 
     @Override

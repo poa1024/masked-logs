@@ -12,7 +12,7 @@ class FieldsPatternSupplierTest {
     fun testThatExactPatternsWork() {
         val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
 
-        val patterns = patternSupplier.get()
+        val patterns = patternSupplier.get().toList()
 
         listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
             .forEachFieldOccurrenceExample { fieldOccurrenceExample ->
@@ -29,7 +29,7 @@ class FieldsPatternSupplierTest {
     fun testThatPartialPatternsDoNotWork() {
         val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
 
-        val patterns = patternSupplier.get()
+        val patterns = patternSupplier.get().toList()
 
         listOf("ext_order_id", "ext-order-id", "extOrderId", "ExtOrderId", "EXT_ORDER_ID")
             .forEachFieldOccurrenceExample {

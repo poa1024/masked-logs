@@ -30,7 +30,7 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
     public void start() {
         try {
             this.logProcessor = new MaskingLogProcessor(
-                    () -> patterns.stream().map(Pattern::compile).toList(),
+                    () -> patterns.stream().map(Pattern::compile),
                     new AsteriskMasker(Double.parseDouble(maskPercentage))
             );
         } catch (Exception e) {

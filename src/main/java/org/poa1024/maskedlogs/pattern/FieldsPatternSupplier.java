@@ -5,7 +5,6 @@ import org.poa1024.maskedlogs.util.Functions;
 
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FieldsPatternSupplier implements PatternSupplier {
@@ -17,14 +16,13 @@ public class FieldsPatternSupplier implements PatternSupplier {
     }
 
     @Override
-    public List<Pattern> get() {
+    public Stream<Pattern> get() {
         return fields
                 .stream()
                 .flatMap(Functions::lowerUnderscoreToAllCaseFormats)
                 .distinct()
                 .map(Pattern::quote)
-                .flatMap(FieldsPatternSupplier::getPatterns)
-                .collect(Collectors.toList());
+                .flatMap(FieldsPatternSupplier::getPatterns);
     }
 
     private static Stream<Pattern> getPatterns(String field) {

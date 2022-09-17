@@ -3,11 +3,12 @@ package org.poa1024.maskedlogs.processor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.regex.Pattern
+import java.util.stream.Stream
 
 class MaskingLogProcessorTest {
 
     private val maskingLogProcessor = MaskingLogProcessor({
-        listOf(
+        Stream.of(
             Pattern.compile("order/(?<value>.*?)\\?"),
             Pattern.compile("apikey=(?<value>.*?)(&|$)"),
             Pattern.compile("APIKEY=(?<value>.*?)&"),
