@@ -10,9 +10,24 @@ import java.util.stream.Stream;
 public class FieldsPatternSupplier implements PatternSupplier {
 
     private final List<String> fields;
+    private boolean jsonPatternsEnabled = true;
+    private boolean urlPathPatternsEnabled = true;
+    private boolean equalSignPatternsEnabled = true;
 
     public FieldsPatternSupplier(List<String> fields) {
         this.fields = fields;
+    }
+
+    public void setJsonPatternsEnabled(boolean jsonPatternsEnabled) {
+        this.jsonPatternsEnabled = jsonPatternsEnabled;
+    }
+
+    public void setUrlPathPatternsEnabled(boolean urlPathPatternsEnabled) {
+        this.urlPathPatternsEnabled = urlPathPatternsEnabled;
+    }
+
+    public void setEqualSignPatternsEnabled(boolean equalSignPatternsEnabled) {
+        this.equalSignPatternsEnabled = equalSignPatternsEnabled;
     }
 
     @Override
@@ -22,14 +37,14 @@ public class FieldsPatternSupplier implements PatternSupplier {
                 .flatMap(Functions::lowerUnderscoreToAllCaseFormats)
                 .distinct()
                 .map(Pattern::quote)
-                .flatMap(FieldsPatternSupplier::getPatterns);
+                .flatMap(this::getPatterns);
     }
 
-    private static Stream<Pattern> getPatterns(String field) {
+    private Stream<Pattern> getPatterns(String field) {
         return Stream.of(
-                getJsonPatterns(field),
-                getUrlPathPatterns(field),
-                getEqualSignPatterns(field)
+                jsonPatternsEnabled ? getJsonPatterns(field) : Stream.<Pattern>empty(),
+                urlPathPatternsEnabled ? getUrlPathPatterns(field) : Stream.<Pattern>empty(),
+                equalSignPatternsEnabled ? getEqualSignPatterns(field) : Stream.<Pattern>empty()
         ).flatMap(s -> s);
     }
 
