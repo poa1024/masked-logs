@@ -17,6 +17,10 @@ public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
     private String maskPercentage = "100.0";
     private final List<String> fieldsToMask = new ArrayList<>();
 
+    private boolean jsonPatternsEnabled = true;
+    private boolean equalSignPatternsEnabled = true;
+    private boolean urlPathPatternsEnabled = false;
+
     private LogProcessor logProcessor;
 
     public void setMaskPercentage(String maskPercentage) {
@@ -31,11 +35,27 @@ public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
         this.fieldsToMask.add(field);
     }
 
+    public void setJsonPatternsEnabled(boolean jsonPatternsEnabled) {
+        this.jsonPatternsEnabled = jsonPatternsEnabled;
+    }
+
+    public void setUrlPathPatternsEnabled(boolean urlPathPatternsEnabled) {
+        this.urlPathPatternsEnabled = urlPathPatternsEnabled;
+    }
+
+    public void setEqualSignPatternsEnabled(boolean equalSignPatternsEnabled) {
+        this.equalSignPatternsEnabled = equalSignPatternsEnabled;
+    }
+
     @Override
     public void start() {
         try {
+            var patternSupplier = new FieldsPatternSupplier(fieldsToMask);
+            patternSupplier.setJsonPatternsEnabled(jsonPatternsEnabled);
+            patternSupplier.setEqualSignPatternsEnabled(equalSignPatternsEnabled);
+            patternSupplier.setUrlPathPatternsEnabled(urlPathPatternsEnabled);
             this.logProcessor = new MaskingLogProcessor(
-                    new FieldsPatternSupplier(fieldsToMask),
+                    patternSupplier,
                     new AsteriskMasker(Double.parseDouble(maskPercentage))
             );
         } catch (Exception e) {

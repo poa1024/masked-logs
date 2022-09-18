@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.poa1024</groupId>
     <artifactId>masked-logs</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -22,8 +22,9 @@ Field name allowed pattern: `[a-z0-9_]*`
 Field value allowed pattern: `[A-Za-z0-9_+-]*`
 
 Fields are searched in:
+
 * URL request parameters
-* URL path parameters
+* URL path parameters (disabled by default)
 * JSON fields
 * Map keys (if map is printed in logs, like `map.toString()`)
 
@@ -107,15 +108,26 @@ spring-logback.xml
 ```
 
 application.properties
+
 ```properties
 log.maskPercentage=60.0
 log.fieldsToMask=person_id, order_id
 ```
 
+## Properties
+
+| Name | Description | Default |
+|:-----|:------------|:--------|
+| `<field/>` | Field that should be masked | none |       
+| `<fields/>` | Fields (comma separated) that should be masked | none |        
+| `<maskPercentage/>` | Value from 0 to 100, defining tha mask size (`card_number=3454*****123` or `card_number=34*********3` or `card_number=************`) | 100% |        
+| `<jsonPatternsEnabled/>` | Enables json fields masking | true |        
+| `<equalSignPatternsEnabled/>` | Enables map keys and url parameters masking | true |        
+| `<urlPathPatternsEnabled/>` | Enables path parameters masking (`http://some.org/person_id/1243`, `person_id` - field's name, `1243` - value to mask) | false |        
+
 ## Manually configured regex patterns
 
-As an alternative you can define regex patterns by yourself. 
-You should use regex group `value` to mark what you want to replace with mask.
+As an alternative you can define regex patterns by yourself. You should use regex group `value` to mark what you want to replace with mask.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
