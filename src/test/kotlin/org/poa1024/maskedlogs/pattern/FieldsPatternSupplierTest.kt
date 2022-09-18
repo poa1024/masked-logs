@@ -9,19 +9,109 @@ class FieldsPatternSupplierTest {
     private val testValue = "abv1232312+345_12-34ABC_1"
 
     @Test
-    fun testThatExactPatternsWork() {
+    fun testThatAllExactPatternsWork() {
         val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
 
         val patterns = patternSupplier.get().toList()
 
         listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
-            .forEachFieldOccurrenceExample { fieldOccurrenceExample ->
-                assertThat(patterns.matches(fieldOccurrenceExample))
-                    .describedAs(fieldOccurrenceExample)
-                    .isOne
-                assertThat(patterns.retrieveValue(fieldOccurrenceExample))
-                    .describedAs(fieldOccurrenceExample)
-                    .containsExactly(testValue)
+            .forEach { field ->
+                (equalSignParameterExamples(field) and urlPathParameterExamples(field) and jsonParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.matches(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isOne
+                        assertThat(patterns.retrieveValue(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .containsExactly(testValue)
+                    }
+            }
+    }
+
+    @Test
+    fun testThatEqualSignExactPatternsWork() {
+        val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
+        patternSupplier.setJsonPatternsEnabled(false)
+        patternSupplier.setEqualSignPatternsEnabled(true)
+        patternSupplier.setUrlPathPatternsEnabled(false)
+
+        val patterns = patternSupplier.get().toList()
+
+        listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
+            .forEach { field ->
+                (equalSignParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.matches(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isOne
+                        assertThat(patterns.retrieveValue(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .containsExactly(testValue)
+                    }
+                (jsonParameterExamples(field) and urlPathParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.noneMatched(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isTrue
+                    }
+            }
+    }
+
+    @Test
+    fun testThatUrlPathExactPatternsWork() {
+        val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
+        patternSupplier.setJsonPatternsEnabled(false)
+        patternSupplier.setEqualSignPatternsEnabled(false)
+        patternSupplier.setUrlPathPatternsEnabled(true)
+
+        val patterns = patternSupplier.get().toList()
+
+        listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
+            .forEach { field ->
+                (urlPathParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.matches(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isOne
+                        assertThat(patterns.retrieveValue(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .containsExactly(testValue)
+                    }
+                (jsonParameterExamples(field) and equalSignParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.noneMatched(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isTrue
+                    }
+            }
+    }
+
+    @Test
+    fun testThatJsonExactPatternsWork() {
+        val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
+        patternSupplier.setJsonPatternsEnabled(true)
+        patternSupplier.setEqualSignPatternsEnabled(false)
+        patternSupplier.setUrlPathPatternsEnabled(false)
+
+        val patterns = patternSupplier.get().toList()
+
+        listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
+            .forEach { field ->
+                (jsonParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.matches(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isOne
+                        assertThat(patterns.retrieveValue(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .containsExactly(testValue)
+                    }
+                (equalSignParameterExamples(field) and urlPathParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.noneMatched(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isTrue
+                    }
             }
     }
 
@@ -32,34 +122,24 @@ class FieldsPatternSupplierTest {
         val patterns = patternSupplier.get().toList()
 
         listOf("ext_order_id", "ext-order-id", "extOrderId", "ExtOrderId", "EXT_ORDER_ID")
-            .forEachFieldOccurrenceExample {
-                assertThat(patterns.noneMatched(it))
-                    .describedAs(it)
-                    .isTrue
+            .forEach { field ->
+                (equalSignParameterExamples(field) and urlPathParameterExamples(field) and jsonParameterExamples(field))
+                    .forEach { fieldOccurrenceExample ->
+                        assertThat(patterns.noneMatched(fieldOccurrenceExample))
+                            .describedAs(fieldOccurrenceExample)
+                            .isTrue
+                    }
             }
     }
 
-    private fun List<String>.forEachFieldOccurrenceExample(action: (String) -> Unit) {
-        return this.flatMap { field ->
-            listOf(
-                generateMapAndUrlParameterExamples(field),
-                generateUrlPathParameterExamples(field),
-                generateJsonExamples(field),
-                generateJsonExamples(field, keyQuote = false),
-                generateJsonExamples(field, valueQuote = false),
-                generateJsonExamples(field, keyQuote = false, valueQuote = false)
-            ).flatten()
-        }.forEach(action)
-    }
-
-    private fun generateUrlPathParameterExamples(field: String) = listOf(
+    private fun urlPathParameterExamples(field: String) = listOf(
         "/$field/$testValue",
         "/$field/$testValue\r",
         "/$field/$testValue\n",
         "/$field/$testValue?",
     )
 
-    private fun generateMapAndUrlParameterExamples(field: String) = listOf(
+    private fun equalSignParameterExamples(field: String) = listOf(
         "$field=$testValue",
         "\r$field=$testValue",
         "\n$field=$testValue",
@@ -79,7 +159,14 @@ class FieldsPatternSupplierTest {
         ", $field=$testValue\n",
     )
 
-    private fun generateJsonExamples(field: String, keyQuote: Boolean = true, valueQuote: Boolean = true): List<String> {
+    private fun jsonParameterExamples(field: String) = listOf(
+        generateJsonExamples(field, keyQuote = true, valueQuote = true),
+        generateJsonExamples(field, keyQuote = false, valueQuote = true),
+        generateJsonExamples(field, keyQuote = true, valueQuote = false),
+        generateJsonExamples(field, keyQuote = false, valueQuote = false)
+    ).flatten()
+
+    private fun generateJsonExamples(field: String, keyQuote: Boolean, valueQuote: Boolean): List<String> {
         val kq = if (keyQuote) "\"" else ""
         val vq = if (valueQuote) "\"" else ""
         return listOf(
@@ -91,7 +178,6 @@ class FieldsPatternSupplierTest {
             """{$kq$field$kq:${vq}$testValue${vq}${System.lineSeparator()}}""",
         )
     }
-
 
     private fun List<Pattern>.matches(s: String): Int {
         return this.map { it.matcher(s).find() }.filter { it }.size
@@ -106,6 +192,10 @@ class FieldsPatternSupplierTest {
 
     private fun List<Pattern>.noneMatched(s: String): Boolean {
         return this.map { it.matcher(s).find() }.none { it }
+    }
+
+    infix fun <T> List<T>.and(other: List<T>): List<T> {
+        return listOf(this, other).flatten()
     }
 
 }
