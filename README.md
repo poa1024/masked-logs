@@ -56,7 +56,7 @@ Fields are searched in:
 #### Log
 ```log
   2022-07-25 12:46:15,633 INFO ort.poa1024.app.ClientLoggingInterceptor [http-nio-8080-exec-3] Request
-  POST https://poa1024.com/person_id/poa1024?order_id=146562356
+  POST https://poa1024.com/orders?order_id=146562356
   Accept: application/json, application/*+json
   Content-Type: application/json
   Content-Length: 433
@@ -69,7 +69,7 @@ Fields are searched in:
 #### Masked log
 ```log
   2022-07-25 12:46:15,633 INFO ort.poa1024.app.ClientLoggingInterceptor [http-nio-8080-exec-3] Request
-  POST https://poa1024.com/person_id/p****24?order_id=14*****56
+  POST https://poa1024.com/orders?order_id=14*****56
   Accept: application/json, application/*+json
   Content-Type: application/json
   Content-Length: 433
