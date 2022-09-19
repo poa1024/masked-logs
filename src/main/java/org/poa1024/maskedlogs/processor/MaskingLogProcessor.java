@@ -6,6 +6,7 @@ import org.poa1024.maskedlogs.pattern.PatternSupplier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MaskingLogProcessor implements LogProcessor {
 
@@ -14,7 +15,7 @@ public class MaskingLogProcessor implements LogProcessor {
 
     public MaskingLogProcessor(PatternSupplier patternSupplier, Masker masker) {
         this.masker = masker;
-        this.patternsToMask = patternSupplier.get().toList();
+        this.patternsToMask = patternSupplier.get().collect(Collectors.toList());
     }
 
     @Override

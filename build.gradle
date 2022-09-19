@@ -8,7 +8,12 @@ plugins {
 }
 
 group = "io.github.poa1024"
-version '1.0.1'
+version '1.0.3'
+
+compileJava {
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+}
 
 java {
     withJavadocJar()

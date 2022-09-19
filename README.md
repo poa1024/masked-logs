@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.poa1024</groupId>
     <artifactId>masked-logs</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
