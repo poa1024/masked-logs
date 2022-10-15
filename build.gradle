@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.poa1024"
-version '1.0.3'
+version '1.0.4'
 
 compileJava {
     sourceCompatibility = '11'

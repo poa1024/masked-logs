@@ -18,14 +18,23 @@ public class FieldsPatternSupplier implements PatternSupplier {
         this.fields = fields;
     }
 
+    /**
+     * Enables masking json fields.
+     */
     public void setJsonPatternsEnabled(boolean jsonPatternsEnabled) {
         this.jsonPatternsEnabled = jsonPatternsEnabled;
     }
 
+    /**
+     * Enables masking url path parameters (/field/value).
+     */
     public void setUrlPathPatternsEnabled(boolean urlPathPatternsEnabled) {
         this.urlPathPatternsEnabled = urlPathPatternsEnabled;
     }
 
+    /**
+     * Enables equals sign parameters (field=value).
+     */
     public void setEqualSignPatternsEnabled(boolean equalSignPatternsEnabled) {
         this.equalSignPatternsEnabled = equalSignPatternsEnabled;
     }

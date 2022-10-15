@@ -120,7 +120,7 @@ log.fieldsToMask=person_id, order_id
 |:-----|:------------|:--------|
 | `<field/>` | Field that should be masked | none |       
 | `<fields/>` | Fields (comma separated) that should be masked | none |        
-| `<maskPercentage/>` | Value from 0 to 100, defining tha mask size (`card_number=3454*****123` or `card_number=34*********3` or `card_number=************`) | 100% |        
+| `<maskPercentage/>` | Value from 0 to 100, defining the mask size (`card_number=3454*****123` or `card_number=34*********3` or `card_number=************`) | 100% |        
 | `<jsonPatternsEnabled/>` | Enables json fields masking | true |        
 | `<equalSignPatternsEnabled/>` | Enables map keys and url parameters masking | true |        
 | `<urlPathPatternsEnabled/>` | Enables path parameters masking (`http://some.org/person_id/1243`, `person_id` - field's name, `1243` - value to mask) | false |        

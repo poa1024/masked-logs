@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Pattern masking layout configurable by field names.
+ */
 public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
 
     private String maskPercentage = "100.0";
@@ -23,26 +26,49 @@ public class AsteriskFieldMaskingPatternLayout extends PatternLayout {
 
     private LogProcessor logProcessor;
 
+    /**
+     * Value from 0.00 to 100.00, defining the mask size (card_number=3454*****123 or
+     * card_number=34*********3 or card_number=************).
+     * Default value is 100.00 (full value is masked).
+     */
     public void setMaskPercentage(String maskPercentage) {
         this.maskPercentage = maskPercentage;
     }
 
+    /**
+     * Adds fields, divided by comma, that will be masked.
+     */
     public void setFields(String fields) {
         this.fieldsToMask.addAll(Arrays.asList(fields.split(" *, *")));
     }
 
+    /**
+     * Adds field that will be masked.
+     */
     public void setField(String field) {
         this.fieldsToMask.add(field);
     }
 
+    /**
+     * Enables masking json fields.
+     * Default value: true.
+     */
     public void setJsonPatternsEnabled(boolean jsonPatternsEnabled) {
         this.jsonPatternsEnabled = jsonPatternsEnabled;
     }
 
+    /**
+     * Enables masking url path parameters (/field/value).
+     * Default value: false.
+     */
     public void setUrlPathPatternsEnabled(boolean urlPathPatternsEnabled) {
         this.urlPathPatternsEnabled = urlPathPatternsEnabled;
     }
 
+    /**
+     * Enables equals sign parameters (field=value).
+     * Default value: true.
+     */
     public void setEqualSignPatternsEnabled(boolean equalSignPatternsEnabled) {
         this.equalSignPatternsEnabled = equalSignPatternsEnabled;
     }

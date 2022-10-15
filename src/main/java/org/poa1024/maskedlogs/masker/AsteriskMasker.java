@@ -7,6 +7,10 @@ public class AsteriskMasker implements Masker {
 
     private final double maskPercentage;
 
+    /**
+     * @param maskPercentage Value from 0.00 to 100.00, defining the mask size (card_number=3454*****123 or
+     *                       card_number=34*********3 or card_number=************).
+     */
     public AsteriskMasker(double maskPercentage) {
         if (maskPercentage <= 0 || maskPercentage > 100) {
             throw new IllegalArgumentException("maskPercentage should in a range 0 - 100");

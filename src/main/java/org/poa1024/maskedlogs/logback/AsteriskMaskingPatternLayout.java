@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Pattern masking layout configurable by regex patterns.
+ */
 public class AsteriskMaskingPatternLayout extends PatternLayout {
 
     private String maskPercentage = "100.0";
@@ -18,10 +21,20 @@ public class AsteriskMaskingPatternLayout extends PatternLayout {
 
     private LogProcessor logProcessor;
 
+    /**
+     * Value from 0.00 to 100.00, defining the mask size (card_number=3454*****123 or
+     * card_number=34*********3 or card_number=************).
+     * Default value is 100.00 (full value is masked).
+     */
     public void setMaskPercentage(String maskPercentage) {
         this.maskPercentage = maskPercentage;
     }
 
+    /**
+     * Adds regex pattern for masking.
+     * Regex group `value` will be used for masking.
+     * For example: order_id=value_that_we_want_to_mask, {@code .*order_id=(?<value>[0-9a-z]*)}
+     */
     public void setRegexPattern(String pattern) {
         this.patterns.add(pattern);
     }
