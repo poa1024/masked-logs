@@ -1,19 +1,20 @@
 package org.poa1024.maskedlogs.processor;
 
 import org.poa1024.maskedlogs.masker.Masker;
-import org.poa1024.maskedlogs.pattern.PatternSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MaskingLogProcessor implements LogProcessor {
 
     private final Masker masker;
     private final List<Pattern> patternsToMask;
 
-    public MaskingLogProcessor(PatternSupplier patternSupplier, Masker masker) {
+    public MaskingLogProcessor(Supplier<Stream<Pattern>> patternSupplier, Masker masker) {
         this.masker = masker;
         this.patternsToMask = patternSupplier.get().collect(Collectors.toList());
     }

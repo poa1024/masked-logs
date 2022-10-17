@@ -4,16 +4,26 @@ import org.poa1024.maskedlogs.util.Constants;
 import org.poa1024.maskedlogs.util.Functions;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class FieldsPatternSupplier implements PatternSupplier {
+/**
+ * Supplies regex patterns that matches fields names.
+ * <p>
+ * Fields should be provided only in the lower underscore case.
+ * Other cases will be calculated automatically.
+ */
+public class FieldsPatternSupplier implements Supplier<Stream<Pattern>> {
 
     private final List<String> fields;
     private boolean jsonPatternsEnabled = true;
     private boolean urlPathPatternsEnabled = true;
     private boolean equalSignPatternsEnabled = true;
 
+    /**
+     * @param fields Fields in the lower underscore format.
+     */
     public FieldsPatternSupplier(List<String> fields) {
         this.fields = fields;
     }
@@ -46,10 +56,10 @@ public class FieldsPatternSupplier implements PatternSupplier {
                 .flatMap(Functions::lowerUnderscoreToAllCaseFormats)
                 .distinct()
                 .map(Pattern::quote)
-                .flatMap(this::getPatterns);
+                .flatMap(this::flatMapPatterns);
     }
 
-    private Stream<Pattern> getPatterns(String field) {
+    private Stream<Pattern> flatMapPatterns(String field) {
         return Stream.of(
                 jsonPatternsEnabled ? getJsonPatterns(field) : Stream.<Pattern>empty(),
                 urlPathPatternsEnabled ? getUrlPathPatterns(field) : Stream.<Pattern>empty(),

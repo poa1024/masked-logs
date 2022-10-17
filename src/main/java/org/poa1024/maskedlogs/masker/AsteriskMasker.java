@@ -1,7 +1,8 @@
 package org.poa1024.maskedlogs.masker;
 
 /**
- * From value to v***e
+ * Uses asterisks for masking.
+ * Example: card_number=3454*****123.
  */
 public class AsteriskMasker implements Masker {
 

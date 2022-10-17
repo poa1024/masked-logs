@@ -10,9 +10,8 @@ class FieldsPatternSupplierTest {
 
     @Test
     fun testThatAllExactPatternsWork() {
-        val patternSupplier = FieldsPatternSupplier(listOf("order_id"))
 
-        val patterns = patternSupplier.get().toList()
+        val patterns = FieldsPatternSupplier(listOf("order_id")).get().toList()
 
         listOf("order_id", "order-id", "orderId", "OrderId", "ORDER_ID")
             .forEach { field ->
